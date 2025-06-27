@@ -1,0 +1,21 @@
+name: Linux tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Check symbolic links
+      run: find . -type d -name .build -prune -o -type l ! -exec test -e {} \; -print | grep -q . && exit 1 || exit 0
+    - name: Build the Docker zkp image
+      run: docker build .
+    - name: Build the Docker secp256k1 image
+      run: docker build -f Exhaustive/Package/Dockerfile .

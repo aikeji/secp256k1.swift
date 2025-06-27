@@ -1,0 +1,17 @@
+pre-push:
+  commands:
+    1_test_secp256k1:
+      run: swift test
+    2_build_zkp:
+      run: swift build --target zkp
+
+pre-commit:
+  commands:
+    1_swiftformat:
+      glob: "*.{swift}"
+      run: swift package plugin --allow-writing-to-package-directory swiftformat --config .swiftformat {all_files}
+    2_swiftlint:
+      glob: "*.{swift}"
+      run: swift run swiftlint --autocorrect --strict --no-cache
+    3_git:
+      run: git add .
